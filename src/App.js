@@ -1,25 +1,49 @@
-import logo from './logo.svg';
+import React, { Component } from 'react'
+import Chuck from './Chuck.webp'
 import './App.css';
+class App extends Component {
+  constructor(props) {
+    super(props)
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    this.state = {
+      categories: [],
+      jokes: {},
+    }
+  }
+
+  componentDidMount() {
+    fetch(`https://api.chucknorris.io/jokes/categories`)
+    .then((response) => response.json())
+    .then((data) => this.setState({ categories: data }));
+  }
+handleChange=(e)=>{
+  const caty=e.target.value;
+  const url=`https://api.chucknorris.io/jokes/random?category=`+ caty ;
+  fetch(url)
+  .then((response) => response.json())
+  .then((data) => this.setState({ jokes: data }));
+  
 }
 
-export default App;
+  render() {
+    return (
+      <div className='main-container'>
+        <h1 className='headline'>Chuck Norris Jokes</h1>
+        <h4><strong>Select Joke Topic..</strong></h4> 
+        <select onChange={this.handleChange}>
+       
+          <option>Select Joke by Category</option>
+          {this.state.categories.map((catagory) => <option>{catagory}</option>)}
+
+
+        </select>
+        <div className='subTitle'>
+<img src={Chuck} alt="chuck norris" />
+<h1 className='main-content'>{this.state.jokes.value}</h1>
+        </div>
+      </div>
+    )
+  }
+}
+export default App
